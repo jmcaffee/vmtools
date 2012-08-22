@@ -25,7 +25,7 @@ mkdir -p --verbose $vmtools_bin
 mkdir -p --verbose $vmtools_avail_vms
 mkdir -p --verbose $vmtools_active_vms
 
-cp -r ./install/opt/vmtools/bin/ $vmtools_bin/
+cp -r ./install/opt/vmtools/bin/* $vmtools_bin/
 
 ##############################################
 
@@ -33,7 +33,8 @@ echo "Creating symlinks."
 cd $vmtools_bin
 for file in ./* ; do
   if [[ -f $file ]]; then
-    ln -s $file /usr/local/bin/`basename $file`
+    fullpath=$(readlink -f "$file")
+    ln -s $fullpath /usr/local/bin/`basename $file`
     echo "Link added: `basename $file`"
   fi
 done
