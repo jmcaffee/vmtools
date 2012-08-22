@@ -29,8 +29,8 @@ usage() {
 #
 
 # Set required UID based on the terminal.
-# In windows, the terminal is cygwin.
-if [[ "x$TERM" == "xcygwin" ]]; then
+# In unix, uname returns 'Linux'.
+if [[ "x$(uname)" != "xLinux" ]]; then
     required_uid=500;
 else
     required_uid=0;
