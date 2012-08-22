@@ -11,7 +11,7 @@
 echo -n "Do you want to download VMDKs (Y/n: default: n)? "
 read do_download
 
-if [[ "X$do_download" != "XY" ]]; then
+if [[ "x$do_download" != "xY" ]]; then
     echo "Skipping VMDK downloads."
     exit 0;
 fi
@@ -22,6 +22,7 @@ fi
 
 
 vmtools_avail_vms=/opt/vmtools/avail-vms
+mkdir -p $vmtools_avail_vms
 
 cd $vmtools_avail_vms
 wget http://downloads.sourceforge.net/project/turnkeylinux/vmdk/turnkey-rails-11.3-lucid-x86-vmdk.zip
