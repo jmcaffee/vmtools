@@ -9,35 +9,6 @@
 ##############################################################################
 
 ##############################################
-# Functions
-#
-
-usage() {
-  echo "Usage: sudo `basename $0`"
-}
-
-##############################################
-# Validation Checks
-#
-
-# Set required UID based on the terminal.
-# In windows, the terminal is cygwin.
-if [[ "x$(uname)" != "xLinux" ]]; then
-  required_uid=500;
-else
-  required_uid=0;
-fi
-
-# Check for proper number of command line args.
-expected_args=0
-e_badargs=65
-if [ $UID -ne $required_uid ] || [ $# -ne $expected_args ]
-then
-    usage
-    exit $e_badargs
-fi
-
-##############################################
 # Script
 #
 
