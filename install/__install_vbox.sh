@@ -35,6 +35,24 @@ sources_list_file () {
 }
 
 
+update_hostname () {
+    local host=$(hostname)
+    local newhost=""
+    echo -n "Change host name to (default: $host): "
+    read newhost
+    if [[ "X$host" == "X$newhost" ]]; then
+        echo "Hostname *not* changed."
+        return 0;
+    fi
+
+    echo "$newhost" > /etc/hostname
+    hostname $newhost
+    sed -i "s|127.0.1.1 \(.*\)|127.0.1.1 $newhost|" /etc/hosts
+    echo "Hostname changed to $newhost"
+    return 0;
+}
+
+
 
 ##############################################
 # Validation Checks
@@ -102,4 +120,9 @@ wget http://download.virtualbox.org/virtualbox/4.1.18/Oracle_VM_VirtualBox_Exten
 VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-4.1.18-78361.vbox-extpack
 cd -
 rm -rf $downloads
+
+# Update hostname
+
+update_hostname
+
 exit 0;
