@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    modifyvm
+# Purpose:: helper script to call VBoxManage modifyvm
+# 
+# Author::    Jeff McAffee 08/21/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+(VBoxManage modifyvm $@)

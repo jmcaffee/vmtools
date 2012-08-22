@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    delvm
+# Purpose:: Unregister and delete a VM
+# 
+# Author::    Jeff McAffee 08/21/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+# Functions
+
+usage() {
+  echo "Usage: sudo `basename $0` {vm-name}"
+}
+
+# Check for proper number of command line args. -----
+expected_args=1
+e_badargs=65
+if [ $UID -ne 0 ] || [ $# -ne $expected_args ]
+then
+    usage
+    exit $e_badargs
+fi
+
+
+# Delete a VM
+(VBoxManage unregistervm $1 --delete)
+
+# Remove the upstart conf file if it exists.
+upstart_conf = "/etc/init/vm-$1.conf"
+if [[ -f $upstart_conf ]] then
+  echo "removing $1"
+  rm $upstart_conf
+else
+  echo "not found: $upstart_conf"
+fi
+
+

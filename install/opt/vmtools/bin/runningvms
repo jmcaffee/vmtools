@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Display a list of running vms
+
+(VBoxManage list runningvms)

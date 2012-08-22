@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Show info for a VM
+
+(VBoxManage showvminfo $1)
