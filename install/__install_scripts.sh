@@ -22,7 +22,7 @@ mkdir -p --verbose $VMTOOLS_BIN
 mkdir -p --verbose $VMTOOLS_AVAIL_VMS
 mkdir -p --verbose $VMTOOLS_ACTIVE_VMS
 
-cp -r $SCRIPT_DIR/install/opt/vmtools/bin/* $VMTOOLS_BIN/
+cp -r $SCRIPT_DIR/opt/vmtools/bin/* $VMTOOLS_BIN/
 
 ##############################################
 
