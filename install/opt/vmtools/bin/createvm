@@ -119,11 +119,11 @@ if [[ "x$owner" == "x" ]]; then
   echo "Owner will be root"
 fi
 
-starton=start on (local-filesystems and net-device-up IFACE=eth0)
+starton="start on (local-filesystems and net-device-up IFACE=eth0)"
 echo -n "Start VM at boot (Y/n)? "
 read start_at_boot
 if [[ "x$start_at_boot" != "xY" ]]; then
-  starton=# $starton
+  starton="# $starton"
   echo "$vm_name VM will *not* start at boot"
 else
   echo "$vm_name VM *will* start at boot"
