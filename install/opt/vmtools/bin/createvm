@@ -72,7 +72,7 @@ unzip -j $VMTOOLS_AVAIL_VMS/$vmzip -d $vm_root
 #
 
 if ( VBoxManage createvm --name $vm_name --basefolder $VMTOOLS_ACTIVE_VMS --ostype Linux --register ); then
-  #statements
+  echo "VM created. Modifying VM..."
 else
   exit $e_badargs
 fi
