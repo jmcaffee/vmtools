@@ -81,11 +81,11 @@ fi
 # Modify the VM - set the correct settings
 #
 
-VBoxManage modify $vm_name --memory 256
-VBoxManage modify $vm_name --pae on
-VBoxManage modify $vm_name --nic1 bridged
-VBoxManage modify $vm_name --bridgeadapter1 eth0
-VBoxManage modify $vm_name --vrde off
+VBoxManage modifyvm $vm_name --memory 256
+VBoxManage modifyvm $vm_name --pae on
+VBoxManage modifyvm $vm_name --nic1 bridged
+VBoxManage modifyvm $vm_name --bridgeadapter1 eth0
+VBoxManage modifyvm $vm_name --vrde off
 
 # Add storage controllers (must be done before adding HDDs).
 
