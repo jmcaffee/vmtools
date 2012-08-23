@@ -8,9 +8,14 @@
 # Website::   http://ktechsystems.com
 ##############################################################################
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 ##############################################
 # Functions
 #
+
+source $SCRIPT_DIR/__vmtools.sh
+
 
 usage() {
   echo "Usage: sudo `basename $0` {vm-name}"
@@ -41,25 +46,32 @@ fi
 # Variables
 #
 
-avail_vms=/opt/vm-server/avail-vms
-active_vms=/opt/vm-server/active-vms
 vm_name=$1
-vm_root=$active_vms/$vm_name
-vm_scripts=$vmroot/scripts
+vm_root=$VMTOOLS_ACTIVE_VMS/$vm_name
+vm_scripts=$vm_root/scripts
 vmdk=turnkey-rails-11.3-lucid-x86
+
+select_vmdk "rails"
+vmzip=$(get_vmdk_zip)
+
+# Strip the suffix from the vmdk zip filename
+suff="-vmdk.zip"
+vmdk=${vmzip%$suff}.vmdk
+echo "vmdk:$vmdk"
+exit 0;
 
 ##############################################
 # Clone VMDK file
 #
 
 mkdir -p $vm_root
-unzip -j $avail_vms/$vmdk-vmdk.zip -d $vm_root
+unzip -j $VMTOOLS_AVAIL_VMS/$vmzip -d $vm_root
 
 ##############################################
 # Create the VM
 #
 
-if ( VBoxManage createvm --name $vm_name --basefolder $active_vms --ostype Linux --register ); then
+if ( VBoxManage createvm --name $vm_name --basefolder $VMTOOLS_ACTIVE_VMS --ostype Linux --register ); then
   #statements
 else
   exit $e_badargs
@@ -82,7 +94,7 @@ VBoxManage storagectl $vm_name --name "SATA Controller" --add sata --bootable on
 
 # Now attach the hard drive
 
-VBoxManage storageattach $vm_name --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $vm_root/$vmdk.vmdk
+VBoxManage storageattach $vm_name --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium $vm_root/$vmdk
 
 
 

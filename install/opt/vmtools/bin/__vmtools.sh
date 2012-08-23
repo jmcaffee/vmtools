@@ -18,6 +18,7 @@ VMTOOLS_AVAIL_VMS=$VMTOOLS_ROOT/avail-vms
 VMTOOLS_ACTIVE_VMS=$VMTOOLS_ROOT/active-vms
 
 VMDK=""
+VMZIP=""
 VMLIST=(core rails ec2sdk mysql)
 VMZIPS=(turnkey-core-12.0rc2-squeeze-x86-vmdk.zip turnkey-rails-11.3-lucid-x86-vmdk.zip turnkey-ec2sdk-11.3-lucid-x86-vmdk.zip turnkey-mysql-11.3-lucid-x86-vmdk.zip)
 TURNKEY="http://downloads.sourceforge.net/project/turnkeylinux/vmdk"
@@ -77,6 +78,27 @@ function select_vmdk () {
 
 }
 export -f select_vmdk
+
+
+#---------------------------------------------
+# get_vmdk_zip
+#
+# Return a VMDK .zip file based on selected $VMDK value.
+#
+# Call this function as vmzip=$(get_vmdk_zip)
+#
+function get_vmdk_zip () {
+    local vmzip="UNKNOWN"
+    local index=0
+    for vm in ${VMLIST[@]} ; do
+        if [[ "X$VMDK" == "X$vm" ]]; then
+            vmzip="${VMZIPS[$index]}"
+        fi
+        let index+=1
+    done
+    echo "$vmzip"
+}
+export -f get_vmdk_zip
 
 
 
