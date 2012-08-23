@@ -58,7 +58,7 @@ vmzip=$(get_vmdk_zip)
 suff="-vmdk.zip"
 vmdk=${vmzip%$suff}.vmdk
 echo "vmdk:$vmdk"
-exit 0;
+#exit 0;
 
 ##############################################
 # Clone VMDK file
