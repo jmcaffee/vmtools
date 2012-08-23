@@ -13,9 +13,9 @@
 #
 
 VMTOOLS_ROOT=/opt/vmtools
-VMTOOLS_BIN=$vmtools_root/bin
-VMTOOLS_AVAIL_VMS=$vmtools_root/avail-vms
-VMTOOLS_ACTIVE_VMS=$vmtools_root/active-vms
+VMTOOLS_BIN=$VMTOOLS_ROOT/bin
+VMTOOLS_AVAIL_VMS=$VMTOOLS_ROOT/avail-vms
+VMTOOLS_ACTIVE_VMS=$VMTOOLS_ROOT/active-vms
 
 VMDK=""
 VMLIST=(core rails ec2sdk mysql)
