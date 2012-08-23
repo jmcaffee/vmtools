@@ -12,23 +12,10 @@
 # Functions
 #
 
-get_vmdk_choice () {
-    local choice="rails"
-    echo "Select a VMDK to download:"
-    for vm in ${vmlist[@]} ; do
-        echo "    $vm"
-    done
-    echo "    all"
-    echo ""
-    echo -n "Choice (default: rails)? "
-    read choice
+# Source the common functions.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $SCRIPT_DIR/__functions.sh
 
-    if [[ "x$choice" != "x" ]]; then
-        VMDK=$choice
-    else
-        VMDK=rails
-    fi
-}
 
 get_skip_downloads_choice () {
     local do_download="n"
@@ -43,13 +30,11 @@ get_skip_downloads_choice () {
     SKIP_DOWNLOADS="N"
 }
 
+
 ##############################################
 # Variables
 #
 
-vmlist=(core rails ec2sdk mysql)
-vmzips=(turnkey-core-12.0rc2-squeeze-x86-vmdk.zip turnkey-rails-11.3-lucid-x86-vmdk.zip turnkey-ec2sdk-11.3-lucid-x86-vmdk.zip turnkey-mysql-11.3-lucid-x86-vmdk.zip)
-turnkey="http://downloads.sourceforge.net/project/turnkeylinux/vmdk"
 
 
 ##############################################
@@ -63,7 +48,7 @@ if [[ "x$SKIP_DOWNLOADS" == "xY" ]]; then
 fi
 echo
 
-get_vmdk_choice
+select_vmdk "rails" "Select a VMDK to download:" "Y"
 echo
 echo
 
@@ -73,20 +58,20 @@ echo
 
 echo "- - - Downloading VMDKs - - -"
 echo
-vmtools_avail_vms=/opt/vmtools/avail-vms
-mkdir -p $vmtools_avail_vms
 
-cd $vmtools_avail_vms
+mkdir -p $VMTOOLS_AVAIL_VMS
+
+cd $VMTOOLS_AVAIL_VMS
 
 index=0
-for vm in ${vmlist[@]} ; do
+for vm in ${VMLIST[@]} ; do
     if [[ "X$VMDK" == "Xall" ]] || [[ "X$VMDK" == "X$vm" ]]; then
-        echo "Downloading ${vmlist[$index]} vmdk..."
-        wget $turnkey/${vmzips[$index]}
+        echo "Downloading ${VMLIST[$index]} vmdk..."
+        wget $TURNKEY/${VMZIPS[$index]}
     fi
-    let index=index+1
+    let index+=1
 done
 
 
-cd -
+cd - > /dev/nul
 exit 0;

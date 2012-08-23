@@ -49,19 +49,21 @@ fi
 # Script
 #
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 install_type=$1
 if [[ "X$install_type" == "Xall" || "X$install_type" == "Xvbox" ]]; then
     echo "Installing vbox."
-    . ./install/__install_vbox.sh
+    source $SCRIPT_DIR/install/__install_vbox.sh
 fi
 
 if [[ "X$install_type" == "Xall" || "X$install_type" == "Xscripts" ]]; then
     echo "Installing scripts."
-    . ./install/__install_scripts.sh
+    source $SCRIPT_DIR/install/__install_scripts.sh
 fi
 
 if [[ "X$install_type" == "Xall" || "X$install_type" == "Xvmdks" ]]; then
     echo "Installing vmdks."
-    . ./install/__install_vmdks.sh
+    source $SCRIPT_DIR/install/__install_vmdks.sh
 fi
 

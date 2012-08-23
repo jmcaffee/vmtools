@@ -8,29 +8,26 @@
 # Website::   http://ktechsystems.com
 ##############################################################################
 
+# Source the common functions.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $SCRIPT_DIR/__functions.sh
+
 ##############################################
 # Script
 #
 
-vmtools_root=/opt/vmtools
-vmtools_bin=$vmtools_root/bin
-vmtools_avail_vms=$vmtools_root/avail-vms
-vmtools_active_vms=$vmtools_root/active-vms
+echo "Creating directories at $VMTOOLS_ROOT"
+mkdir -p --verbose $VMTOOLS_ROOT
+mkdir -p --verbose $VMTOOLS_BIN
+mkdir -p --verbose $VMTOOLS_AVAIL_VMS
+mkdir -p --verbose $VMTOOLS_ACTIVE_VMS
 
-##############################################
-
-echo "Creating directories at $vmtools_root"
-mkdir -p --verbose $vmtools_root
-mkdir -p --verbose $vmtools_bin
-mkdir -p --verbose $vmtools_avail_vms
-mkdir -p --verbose $vmtools_active_vms
-
-cp -r ./install/opt/vmtools/bin/* $vmtools_bin/
+cp -r $SCRIPT_DIR/install/opt/vmtools/bin/* $VMTOOLS_BIN/
 
 ##############################################
 
 echo "Creating symlinks."
-cd $vmtools_bin
+cd $VMTOOLS_BIN
 for file in ./* ; do
   if [[ -f $file ]]; then
     fullpath=$(readlink -f "$file")

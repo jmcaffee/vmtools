@@ -12,44 +12,12 @@
 # Functions
 #
 
+# Source the common functions.
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $SCRIPT_DIR/__functions.sh
+
 usage() {
   echo "Usage: sudo `basename $0`"
-}
-
-
-sources_list_file () {
-  local srcfile="/etc/apt/sources.list.d/source.list"
-  
-  if [[ -f $srcfile ]]; then
-    echo $srcfile
-    return
-  fi
-
-  srcfile="/etc/apt/sources.list"
-  if [[ -f $srcfile ]]; then
-    echo $srcfile
-    return
-  fi
-
-  echo ""
-}
-
-
-update_hostname () {
-    local host=$(hostname)
-    local newhost=""
-    echo -n "Change host name to (default: $host): "
-    read newhost
-    if [[ "X$host" == "X$newhost" ]]; then
-        echo "Hostname *not* changed."
-        return 0;
-    fi
-
-    echo "$newhost" > /etc/hostname
-    hostname $newhost
-    sed -i "s|127.0.1.1 \(.*\)|127.0.1.1 $newhost|" /etc/hosts
-    echo "Hostname changed to $newhost"
-    return 0;
 }
 
 
@@ -78,8 +46,7 @@ echo "sources.list found at \"$sources_list\""
 # Add repo to sources.list.
 
 echo "Adding VirtualBox repo to sources.list."
-script_path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-script_path=$script_path/`basename $0`
+script_path=$SCRIPT_DIR/`basename $0`
 
 (cat <<EOL
 
