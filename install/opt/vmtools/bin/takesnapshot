@@ -44,7 +44,7 @@ fi
 vm_name=$1
 dt=$( date +%Y-%m-%d )
 dt_name="snapshot-$dt"
-snap_name=${$2:-$dt_name}               # Default to 'snapshot-YYYY-MM-DD'
+snap_name=${2:-$dt_name}               # Default to 'snapshot-YYYY-MM-DD'
 
 
 ##############################################
