@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    runtests
+# Purpose:: Run all tests
+# 
+# Author::    Jeff McAffee 08/22/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Run test scripts.
+#
+source $SCRIPT_DIR/test-generate_upstart_file
+source $SCRIPT_DIR/test-vm_dir_functions
+

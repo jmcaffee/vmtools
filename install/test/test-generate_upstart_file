@@ -1,0 +1,158 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    test-generate_upstart_file
+# Purpose:: Testing the generate_upstart_file function
+# 
+# Author::    Jeff McAffee 08/22/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+source $INSTALL_DIR/opt/vmtools/bin/__vmtools.sh
+source $SCRIPT_DIR/test_functions
+
+# Create a upstart version without remote desktop.
+
+sedtest="./sedtest.conf"
+if [[ -r $sedtest ]]; then
+    rm -f $sedtest
+fi
+if [[ -r $sedtest.1 ]]; then
+    rm -f $sedtest.1
+fi
+if [[ -r $sedtest.2 ]]; then
+    rm -f $sedtest.2
+fi
+if [[ -r $sedtest.3 ]]; then
+    rm -f $sedtest.3
+fi
+if [[ -r $sedtest.4 ]]; then
+    rm -f $sedtest.4
+fi
+
+
+vmuser="testuser"
+vmname="sed"
+starton=true
+remote=true
+
+describe "Upstart Script Generation"
+            
+    describe "when output parameter is missing"
+        it "should return !0"
+            if (generate_upstart_file); then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+
+        end_it # should return !0
+        
+    end_describe # when output parameter is missing
+
+    describe "when vmname parameter is missing"
+        it "should return !0"
+            if (generate_upstart_file $sedtest); then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+
+        end_it # should return !0
+
+
+    end_describe
+
+    describe "when output and vmname parameters are provided"
+            it "should return 0"
+                if ( ! generate_upstart_file "${sedtest}.1" $vmname ); then
+                    fail_msg "fail"
+                    exit 1;
+                else
+                    pass_msg "pass"
+                fi
+            end_it # should return 0
+
+            it "should create a conf file"
+                if [[ ! -r "$sedtest.1" ]]; then
+                    fail_msg "fail"
+                    exit 1;
+                else
+                    pass_msg "pass"
+                fi
+            end_it # should create a conf file
+
+    end_describe # when output and vmname parameters are provided
+
+    describe "when output, vmname, and vmuser parameters are provided"
+        it "should return 0 for exit code"
+            if ( ! generate_upstart_file "${sedtest}.2" $vmname $vmuser ); then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should return 0 for exit code
+
+        it "should generate conf file"
+            if [[ ! -r "$sedtest.2" ]]; then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should generate conf file
+
+    end_describe # when output, vmname, and vmuser parameters are provided
+
+
+    describe "when output, vmname, vmuser and start_on_boot parameters are provided"
+        it "should return 0 exit code"
+            if ( ! generate_upstart_file "${sedtest}.3" $vmname $vmuser $starton ); then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should return 0 for exit code
+
+        it "should generate conf file"
+            if [[ ! -r "$sedtest.3" ]]; then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should generate conf file
+
+    end_describe # when output, vmname, vmuser and start_on_boot parameters are provided
+
+
+    describe "when output, vmname, vmuser, start_on_boot and remote parameters are provided"
+        it "should return 0 exit code"
+            if ( ! generate_upstart_file "${sedtest}.4" $vmname $vmuser $starton $remote ); then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should return 0 exit code
+
+        it "should generate conf file"
+            if [[ ! -r "$sedtest.4" ]]; then
+                fail_msg "fail"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should generate conf file
+
+    end_describe # when output, vmname, vmuser, start_on_boot and remote parameters are provided
+
+
+end_describe # Upstart Script Generation
+

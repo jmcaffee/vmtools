@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    test-vm_dir_functions
+# Purpose:: Testing the vm_dir functions
+# 
+# Author::    Jeff McAffee 08/22/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+source $INSTALL_DIR/opt/vmtools/bin/__vmtools.sh
+source $SCRIPT_DIR/test_functions
+
+
+describe "function vm_root_dir"
+    describe "when passed vmname of 'myvm'"
+        it "should return correct path"
+            vmname="myvm"
+            actual=$(vm_root_dir $vmname)
+            expected="$VMTOOLS_ACTIVE_VMS/$vmname"
+            if [[ "x$actual" != "x$expected" ]]; then
+                fail_msg "fail. Expected: $expected    Actual: $actual"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should return correct path
+
+    end_describe
+    
+    describe "when vmname parameter not provided"
+        it "should return path with 'tmp' as vmname"
+            vmname="tmp"
+            actual=$(vm_root_dir)
+            expected="$VMTOOLS_ACTIVE_VMS/$vmname"
+            if [[ "x$actual" != "x$expected" ]]; then
+                fail_msg "fail. Expected: $expected    Actual: $actual"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should return path with 'tmp' as vmname
+    end_describe
+
+end_describe # function vm_root_dir
+
+
+describe "function vm_scripts_dir"
+    describe "when vmname parameter is provided"
+        it "should return the correct path"
+            vmname="othervm"
+            actual=$(vm_scripts_dir $vmname)
+            expected="$VMTOOLS_ACTIVE_VMS/$vmname/scripts"
+            if [[ "x$actual" != "x$expected" ]]; then
+                fail_msg "fail. Expected: $expected    Actual: $actual"
+                exit 1;
+            else
+                pass_msg "pass"
+            fi
+        end_it # should return the correct path
+    end_describe
+
+    describe "when vmname parameter is missing"
+            it "should return path with 'tmp' as vmname"
+                vmname="tmp"
+                actual=$(vm_scripts_dir $vmname)
+                expected="$VMTOOLS_ACTIVE_VMS/$vmname/scripts"
+                if [[ "x$actual" != "x$expected" ]]; then
+                    fail_msg "fail. Expected: $expected    Actual: $actual"
+                    exit 1;
+                else
+                    pass_msg "pass"
+                fi
+            end_it # should use 'tmp' as the vmname    
+    end_describe # when vmname parameter is missing
+end_describe # function vm_scripts_dir
+

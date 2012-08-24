@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    tt-functions
+# Purpose:: Test functions
+# 
+# Author::    Jeff McAffee 08/22/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+
+##############################################
+# Global variables
+#
+
+
+vmtools_root=/opt/vmtools
+vmtools_bin=$vmtools_root/bin
+vmtools_avail_vms=$vmtools_root/avail-vms
+vmtools_active_vms=$vmtools_root/active-vms
+
+#---------------------------------------------
+# get_vmdk
+#
+# Return a vmdk
+#
+function get_vmdk () {
+    local varname="testing get_vmdk"
+    echo "vmtools_root=$vmtools_root"
+    echo "vmtools_bin=$vmtools_bin"
+    echo "vmtools_avail_vms=$vmtools_avail_vms"
+    echo "vmtools_active_vms=$vmtools_active_vms"
+    
+}
+export -f get_vmdk
+
+
+
+#---------------------------------------------
+# is_linux
+#
+# Exit with 0 if OS is Linux, 1 otherwise.
+#
+function is_linux () {
+    if [[ "x$(uname)" == "xLinux" ]]; then
+        exit 0;
+    fi
+    exit 1;
+}
+export -f is_linux
+
+
+TAB_LEVEL=0
+
+#---------------------------------------------
+# get_tab
+#
+# Returns a string of spaces based on the current TAB_LEVEL.
+#
+function get_tab () {
+    local tab=""
+    local i
+    for (( i = 0; i < $TAB_LEVEL; i++ )); do
+        tab="$tab  "
+    done
+    echo "$tab"
+}
+export -f get_tab
+
+
+
+#---------------------------------------------
+# describe
+#
+# Helper function for testing
+#
+function describe () {
+    local msg=""
+    msg=${1:-$msg}        # Defaults to $msg.
+    if [[ -n $msg ]]; then
+        tab=$(get_tab)
+        echo "$tab$msg"
+    fi
+    let "TAB_LEVEL += 1"
+    #echo "TAB_LEVEL: $TAB_LEVEL"
+}
+export -f describe
+
+
+#---------------------------------------------
+# end_describe
+#
+# Helper function for testing
+#
+function end_describe () {
+    let "TAB_LEVEL -= 1"
+    echo ""
+}
+export -f end_describe
+
+
+#---------------------------------------------
+# it
+#
+# Helper function for testing
+#
+function it () {
+    local msg=""
+    msg=${1:-$msg}        # Defaults to $msg.
+    if [[ -n $msg ]]; then
+        tab=$(get_tab)
+        echo "$tab$msg"
+    fi
+    let "TAB_LEVEL += 1"
+    #echo "TAB_LEVEL: $TAB_LEVEL"
+}
+export -f it
+
+
+#---------------------------------------------
+# end_it
+#
+# Helper function for testing
+#
+function end_it () {
+    let "TAB_LEVEL -= 1"
+    echo ""
+}
+export -f end_it
+
+
+##############################################
+# Color Codes for colorfull messages
+#
+
+#  Color        Foreground      Background
+#  black        30              40
+#  red          31              41
+#  green        32              42
+#  yellow       33              43
+#  blue         34              44
+#  magenta      35              45
+#  cyan         36              46
+#  white        37              47
+
+# Color code variables
+#
+black='\E[30;40m'
+red='\E[31;40m'
+green='\E[32;40m'
+yellow='\E[33;40m'
+blue='\E[34;40m'
+magenta='\E[35;40m'
+cyan='\E[36;40m'
+white='\E[37;40m'
+
+#---------------------------------------------
+# color_msg
+#
+# Echo a message in colored text.
+#
+function color_msg () {
+    local msg=""
+    local color="$white"
+
+    msg=${1:-$msg}      # Defaults to default msg.
+    color=${2:-$color}        # Defaults to $color.
+
+    # If $msg isn't quoted, it's interpreted as multiple args.
+    if [ -n "$msg" ]; then
+        echo -en "$color"
+        echo -n "$msg"
+
+        if ( is_linux ); then
+            `tput sgr0`
+        else
+            echo -e "$white"
+        fi
+    fi
+}
+export -f color_msg
+
+
+#---------------------------------------------
+# fail_msg
+#
+# Echo a message in red text.
+#
+function fail_msg () {
+    local msg=""
+    msg=${1:-$msg}      # Defaults to default msg.
+    # If $msg isn't quoted, it's interpreted as multiple args.
+    tab=$(get_tab)
+    color_msg "$tab$msg" "$red"
+}
+export -f fail_msg
+
+
+#---------------------------------------------
+# pass_msg
+#
+# Echo a message in green text.
+#
+function pass_msg () {
+    local msg=""
+    msg=${1:-$msg}      # Defaults to default msg.
+    # If $msg isn't quoted, it's interpreted as multiple args.
+    tab=$(get_tab)
+    color_msg "$tab$msg" "$green"
+}
+export -f pass_msg
+
+
+
+

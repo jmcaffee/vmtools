@@ -35,11 +35,10 @@ fi
 
 # Check for proper number of command line args.
 expected_args=1
-e_badargs=65
 if [ $UID -ne $required_uid ] || [ $# -ne $expected_args ]
 then
     usage
-    exit $e_badargs
+    exit $E_BADARGS
 fi
 
 ##############################################
@@ -47,9 +46,8 @@ fi
 #
 
 vm_name=$1
-vm_root=$VMTOOLS_ACTIVE_VMS/$vm_name
-vm_scripts=$vm_root/scripts
-vmdk=turnkey-rails-11.3-lucid-x86
+vm_root=$(vm_root_dir $vm_name)  # $VMTOOLS_ACTIVE_VMS/$vm_name
+vm_scripts=$(vm_scripts_dir $vm_name)    # $vm_root/scripts
 
 select_vmdk "rails"
 vmzip=$(get_vmdk_zip)
@@ -57,8 +55,7 @@ vmzip=$(get_vmdk_zip)
 # Strip the suffix from the vmdk zip filename
 suff="-vmdk.zip"
 vmdk=${vmzip%$suff}.vmdk
-echo "vmdk:$vmdk"
-#exit 0;
+
 
 ##############################################
 # Clone VMDK file
@@ -74,7 +71,7 @@ unzip -j $VMTOOLS_AVAIL_VMS/$vmzip -d $vm_root
 if ( VBoxManage createvm --name $vm_name --basefolder $VMTOOLS_ACTIVE_VMS --ostype Linux --register ); then
   echo "VM created. Modifying VM..."
 else
-  exit $e_badargs
+  exit $E_BADARGS
 fi
 
 ##############################################
@@ -112,6 +109,8 @@ VBoxManage showvminfo $vm_name
 # Create upstart scripts
 #
 
+# Get username.
+
 echo -n "Owner's username (default: root): "
 read owner
 if [[ "x$owner" == "x" ]]; then
@@ -119,94 +118,53 @@ if [[ "x$owner" == "x" ]]; then
   echo "Owner will be root"
 fi
 
-starton="start on (local-filesystems and net-device-up IFACE=eth0)"
+# Get start at boot.
+
 echo -n "Start VM at boot (Y/n)? "
 read start_at_boot
 if [[ "x$start_at_boot" != "xY" ]]; then
-  starton="# $starton"
+  start_at_boot=false
   echo "$vm_name VM will *not* start at boot"
 else
+  start_at_boot=true
   echo "$vm_name VM *will* start at boot"
 fi
 
+# Create the scripts dir.
+
 mkdir -p $vm_scripts
+
+# Set the upstart script names.
+
+up="$vm_scripts/vm-$vm_name.conf"
+up_rd="$vm_scripts/vm-$vm_name-rd.conf"
 
 # Create a upstart version without remote desktop.
 
-(sed -e 's/USERNAME/'$owner'/g' \
-     -e 's/VMNAME/'$1'/g'       \
-     -e 's/STARTON/'$starton'/g' <<EOF
-description "VMNAME VM"
-author "Jeff McAffee"
+generate_upstart_file $up $vm_name $owner $start_at_boot false
 
-# Uncomment the following line to have VM start on start up.
-STARTON
+# Create a upstart version *with* remote desktop.
+# Will NOT start at boot.
 
-# Stop the VM when the system goes down. Our pre-stop script has
-# already run at this point, the VM stopped with 'savestate'.
-stop on runlevel [016]
-
-console output
-
-env user=USERNAME
-env vmname=VMNAME
-
-# Restart VM if it shuts down, stop trying after 5 bounces in 10 seconds.
-respawn
-respawn limit 5 10
-
-pre-stop script
-su $user -c "VBoxManage controlvm $vmname savestate"
-end script
-
-exec su $user -c "VBoxHeadless --startvm $vmname --vrde=off"
-
-EOF
-) >$vm_scripts/vm-$vm_name.conf
-
-
-
-# Create a upstart version turning on remote desktop.
-
-(sed -e 's/USERNAME/'$owner'/g' \
-     -e 's/VMNAME/'$1'/g'       \
-     -e 's/STARTON/'$starton'/g' <<EOF
-description "VMNAME VM"
-author "Jeff McAffee"
-
-# Uncomment the following line to have VM start on start up.
-STARTON
-
-# Stop the VM when the system goes down. Our pre-stop script has
-# already run at this point, the VM stopped with 'savestate'.
-stop on runlevel [016]
-
-console output
-
-env user=USERNAME
-env vmname=VMNAME
-
-# Restart VM if it shuts down, stop trying after 5 bounces in 10 seconds.
-respawn
-respawn limit 5 10
-
-pre-stop script
-su $user -c "VBoxManage controlvm $vmname savestate"
-end script
-
-exec su $user -c "VBoxHeadless --startvm $vmname --vrde=on"
-
-EOF
-) >$vm_scripts/vm-$vm_name-rd.conf
-
+generate_upstart_file $up_rd $vm_name $owner false true
 
 
 ##############################################
 # Copy upstart scripts to /etc/init/
 #
 
-cp $vm_scripts/vm-$vm_name.conf /etc/init/
-cp $vm_scripts/vm-$vm_name-rd.conf /etc/init/
+echo -n "Copy upstart scripts to /etc/init/ (Y/n)? "
+read copy_upstarts
+if [[ "x$copy_upstarts" == "xY" ]]; then
+  copy_upstarts=true
+else
+  copy_upstarts=false
+fi
+
+if $copy_upstarts ; then
+    cp $up /etc/init/
+    cp $up_rd /etc/init/
+fi
 
 
 
@@ -214,5 +172,15 @@ cp $vm_scripts/vm-$vm_name-rd.conf /etc/init/
 # Start the VM
 #
 
-echo "Starting VM with: $ start vm-$vm_name-rd"
-start vm-$vm_name-rd
+echo -n "Start the VM (Y/n)? "
+read start_vm
+if [[ "x$start_vm" == "xY" ]]; then
+  start_vm=true
+else
+  start_vm=false
+fi
+
+if $start_vm ; then
+    echo "Starting VM (Remote Desktop) with: $ start vm-$vm_name-rd"
+    start vm-$vm_name-rd
+fi

@@ -38,11 +38,10 @@ fi
 
 # Check for proper number of command line args.
 expected_args=1
-e_badargs=65
 if [ $UID -ne $required_uid ] || [ $# -ne $expected_args ]
 then
         usage
-        exit $e_badargs
+        exit $E_BADARGS
 fi
 
 ##############################################
