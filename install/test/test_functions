@@ -49,8 +49,8 @@ function is_linux () {
 }
 export -f is_linux
 
+TAB_LEVEL=${TAB_LEVEL:-0}        # Defaults to 0.
 
-TAB_LEVEL=0
 
 #---------------------------------------------
 # get_tab
