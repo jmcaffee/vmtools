@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    test-uid
+# Purpose:: Test library function 'required_uid'
+# 
+# Author::    Jeff McAffee 08/23/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+TARGET_SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+TARGET_PATH=$TARGET_SRC_DIR/opt/vmtools/bin/__vmtools.sh
+source $TARGET_PATH
+source $SCRIPT_DIR/test_functions
+
+describe "function required_uid"
+    describe "when UID is requested"
+        describe "based on OS value returned from 'uname'"
+            
+            # :before
+
+            it "should return UID 0 for Linux and 500 for everything else"
+                expected=500
+                if [[ "x$(uname)" == "xLinux" ]]; then
+                    expected=0
+                fi
+                actual=$(required_uid)
+                if [[ $actual == $expected ]]; then
+                    pass
+                else
+                    fail "Actual ($actual) != Expected ($expected)"
+                fi
+            end_it # should ...
+        end_describe # when ...
+    end_describe # when ...
+
+end_describe # required_uid
+
+

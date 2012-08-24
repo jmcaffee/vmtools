@@ -70,6 +70,29 @@ export -f vm_scripts_dir
 
 
 #---------------------------------------------
+# required_uid
+#
+# Return the required UID (sudo) based on OS.
+#
+# Retrieve the result using:
+# req=$(required_uid)
+#
+function required_uid () {
+    local required_uid=500
+    # Set required UID to 500 by default (for windows).
+
+    if [[ "x$(uname)" == "xLinux" ]]; then
+        required_uid=0;
+    fi
+
+    echo "$required_uid"
+
+}
+export -f required_uid
+
+
+
+#---------------------------------------------
 # select_vmdk
 #
 # Allow user to select a VMDK.
