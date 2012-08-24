@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+##############################################################################
+# File::    takesnapshot
+# Purpose:: Take a snapshot of a VM
+# 
+# Author::    Jeff McAffee 08/23/2012
+# Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
+# Website::   http://ktechsystems.com
+##############################################################################
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+##############################################
+# Functions
+#
+
+source $SCRIPT_DIR/__vmtools.sh
+
+
+usage() {
+  echo "Usage: sudo `basename $0` {vm-name} [snapshot-name]"
+  echo "       snapshot-name      default: snapshot-YYYY-MM-DD"
+}
+
+##############################################
+# Validation Checks
+#
+
+# Set required UID based on the OS.
+required_uid=$(required_uid)
+
+# Check for proper number of command line args.
+expected_args=1
+if [ $UID -ne $required_uid ] || [ $# -lt $expected_args ]
+then
+    usage
+    exit $E_BADARGS
+fi
+
+##############################################
+# Variables
+#
+
+vm_name=$1
+dt=$( date +%Y-%m-%d )
+dt_name="snapshot-$dt"
+snap_name=${$2:-$dt_name}               # Default to 'snapshot-YYYY-MM-DD'
+
+
+##############################################
+# Take a snapshot
+#
+
+if ( VBoxManage snapshot $vm_name take $snap_name ); then
+  echo "Snapshot taken: $snap_name"
+else
+  exit $E_BADARGS
+fi
+
