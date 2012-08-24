@@ -21,10 +21,10 @@ describe "function vm_root_dir"
             actual=$(vm_root_dir $vmname)
             expected="$VMTOOLS_ACTIVE_VMS/$vmname"
             if [[ "x$actual" != "x$expected" ]]; then
-                fail_msg "fail. Expected: $expected    Actual: $actual"
+                fail "fail. Expected: $expected    Actual: $actual"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should return correct path
 
@@ -36,10 +36,10 @@ describe "function vm_root_dir"
             actual=$(vm_root_dir)
             expected="$VMTOOLS_ACTIVE_VMS/$vmname"
             if [[ "x$actual" != "x$expected" ]]; then
-                fail_msg "fail. Expected: $expected    Actual: $actual"
+                fail "fail. Expected: $expected    Actual: $actual"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should return path with 'tmp' as vmname
     end_describe
@@ -54,10 +54,10 @@ describe "function vm_scripts_dir"
             actual=$(vm_scripts_dir $vmname)
             expected="$VMTOOLS_ACTIVE_VMS/$vmname/scripts"
             if [[ "x$actual" != "x$expected" ]]; then
-                fail_msg "fail. Expected: $expected    Actual: $actual"
+                fail "fail. Expected: $expected    Actual: $actual"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should return the correct path
     end_describe
@@ -68,10 +68,10 @@ describe "function vm_scripts_dir"
                 actual=$(vm_scripts_dir $vmname)
                 expected="$VMTOOLS_ACTIVE_VMS/$vmname/scripts"
                 if [[ "x$actual" != "x$expected" ]]; then
-                    fail_msg "fail. Expected: $expected    Actual: $actual"
+                    fail "fail. Expected: $expected    Actual: $actual"
                     exit 1;
                 else
-                    pass_msg "pass"
+                    pass "pass"
                 fi
             end_it # should use 'tmp' as the vmname    
     end_describe # when vmname parameter is missing

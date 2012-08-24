@@ -49,7 +49,47 @@ function is_linux () {
 }
 export -f is_linux
 
-TAB_LEVEL=${TAB_LEVEL:-0}        # Defaults to 0.
+zero=0
+TAB_LEVEL=${TAB_LEVEL:-$zero}       # Defaults to 0.
+TESTS_RUN=${TESTS_RUN:-$zero}      # Defaults to 0.
+PASSES=${PASSES:-$zero}            # Defaults to 0.
+FAILURES=${FAILURES:-0}        # Defaults to 0.
+
+
+
+#---------------------------------------------
+# test_stats
+#
+# Output test stats
+#
+function test_stats () {
+    local tests_run=0
+    local passes=0
+    local failures=0
+
+    tests_run=${TESTS_RUN:-$tests_run}  # Defaults to 0.
+    passes=${PASSES:-$passes}        # Defaults to 0.
+    failures=${FAILURES:-$failures}    # Defaults to 0.
+   
+    echo "------------------------------"
+    echo ""
+    echo "Tests run: $tests_run"
+    if [ $passes -gt 0 ] ; then
+        color_msg "Passes:    $passes" "$green";
+    else
+        echo "Passes:    $passes"
+    fi
+    if [ $failures -gt 0 ] ; then
+        color_msg "Failures:  $failures" "$red";
+    else
+        echo "Failures:  $failures"
+    fi
+    
+}
+export -f test_stats
+
+
+
 
 
 #---------------------------------------------
@@ -106,6 +146,7 @@ export -f end_describe
 #
 function it () {
     local msg=""
+    let "TESTS_RUN += 1"
     msg=${1:-$msg}        # Defaults to $msg.
     if [[ -n $msg ]]; then
         tab=$(get_tab)
@@ -182,33 +223,35 @@ export -f color_msg
 
 
 #---------------------------------------------
-# fail_msg
+# fail
 #
 # Echo a message in red text.
 #
-function fail_msg () {
-    local msg=""
+function fail () {
+    local msg="fail"
+    let "FAILURES += 1"
     msg=${1:-$msg}      # Defaults to default msg.
     # If $msg isn't quoted, it's interpreted as multiple args.
     tab=$(get_tab)
     color_msg "$tab$msg" "$red"
 }
-export -f fail_msg
+export -f fail
 
 
 #---------------------------------------------
-# pass_msg
+# pass
 #
 # Echo a message in green text.
 #
-function pass_msg () {
-    local msg=""
+function pass () {
+    local msg="pass"
+    let "PASSES += 1"
     msg=${1:-$msg}      # Defaults to default msg.
     # If $msg isn't quoted, it's interpreted as multiple args.
     tab=$(get_tab)
     color_msg "$tab$msg" "$green"
 }
-export -f pass_msg
+export -f pass
 
 
 

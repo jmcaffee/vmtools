@@ -43,10 +43,10 @@ describe "Upstart Script Generation"
     describe "when output parameter is missing"
         it "should return !0"
             if (generate_upstart_file); then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
 
         end_it # should return !0
@@ -56,10 +56,10 @@ describe "Upstart Script Generation"
     describe "when vmname parameter is missing"
         it "should return !0"
             if (generate_upstart_file $sedtest); then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
 
         end_it # should return !0
@@ -70,19 +70,19 @@ describe "Upstart Script Generation"
     describe "when output and vmname parameters are provided"
             it "should return 0"
                 if ( ! generate_upstart_file "${sedtest}.1" $vmname ); then
-                    fail_msg "fail"
+                    fail "fail"
                     exit 1;
                 else
-                    pass_msg "pass"
+                    pass "pass"
                 fi
             end_it # should return 0
 
             it "should create a conf file"
                 if [[ ! -r "$sedtest.1" ]]; then
-                    fail_msg "fail"
+                    fail "fail"
                     exit 1;
                 else
-                    pass_msg "pass"
+                    pass "pass"
                 fi
             end_it # should create a conf file
 
@@ -91,19 +91,19 @@ describe "Upstart Script Generation"
     describe "when output, vmname, and vmuser parameters are provided"
         it "should return 0 for exit code"
             if ( ! generate_upstart_file "${sedtest}.2" $vmname $vmuser ); then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should return 0 for exit code
 
         it "should generate conf file"
             if [[ ! -r "$sedtest.2" ]]; then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should generate conf file
 
@@ -113,19 +113,19 @@ describe "Upstart Script Generation"
     describe "when output, vmname, vmuser and start_on_boot parameters are provided"
         it "should return 0 exit code"
             if ( ! generate_upstart_file "${sedtest}.3" $vmname $vmuser $starton ); then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should return 0 for exit code
 
         it "should generate conf file"
             if [[ ! -r "$sedtest.3" ]]; then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should generate conf file
 
@@ -135,19 +135,19 @@ describe "Upstart Script Generation"
     describe "when output, vmname, vmuser, start_on_boot and remote parameters are provided"
         it "should return 0 exit code"
             if ( ! generate_upstart_file "${sedtest}.4" $vmname $vmuser $starton $remote ); then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should return 0 exit code
 
         it "should generate conf file"
             if [[ ! -r "$sedtest.4" ]]; then
-                fail_msg "fail"
+                fail "fail"
                 exit 1;
             else
-                pass_msg "pass"
+                pass "pass"
             fi
         end_it # should generate conf file
 

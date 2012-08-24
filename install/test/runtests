@@ -9,6 +9,7 @@
 ##############################################################################
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $SCRIPT_DIR/test_functions
 
 # Run test scripts.
 #
@@ -18,3 +19,4 @@ for testscript in $SCRIPT_DIR/test-* ; do
     source $testscript
 done
 
+test_stats
