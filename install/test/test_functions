@@ -172,7 +172,7 @@ function color_msg () {
         echo -n "$msg"
 
         if ( is_linux ); then
-            `tput sgr0`
+            $(tput sgr0)
         else
             echo -e "$white"
         fi
