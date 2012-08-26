@@ -25,17 +25,16 @@ usage() {
 # Validation Checks
 #
 
-# Set required UID based on the terminal.
-# In windows, the terminal is cygwin.
-if [[ "x$(uname)" != "xLinux" ]]; then
-  required_uid=500;
-else
-  required_uid=0;
+# Check if user has sudo privledges.
+if ( ! is_admin ); then
+    echo "Must run as sudo or root."
+    usage
+    exit $E_NOTAUTHORIZED
 fi
 
 # Check for proper number of command line args.
 expected_args=1
-if [ $UID -ne $required_uid ] || [ $# -ne $expected_args ]
+if [ $# -ne $expected_args ]
 then
     usage
     exit $E_BADARGS

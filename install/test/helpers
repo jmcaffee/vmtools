@@ -180,7 +180,7 @@ function it () {
     msg=${1:-$msg}        # Defaults to $msg.
     if [[ -n $msg ]]; then
         tab=$(get_tab)
-        color_msg "$tab$msg" "$cyan"
+        color_msg "$tab$msg" "$yellow"
         #echo "$tab$msg"
     fi
     let "TAB_LEVEL += 1"

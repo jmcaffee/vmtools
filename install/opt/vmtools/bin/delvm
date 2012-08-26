@@ -8,32 +8,68 @@
 # Website::   http://ktechsystems.com
 ##############################################################################
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+##############################################
 # Functions
+#
+
+source $SCRIPT_DIR/__vmtools.sh
+
+
+# Local Functions
 
 usage() {
   echo "Usage: sudo `basename $0` {vm-name}"
 }
 
-# Check for proper number of command line args. -----
-expected_args=1
-e_badargs=65
-if [ $UID -ne 0 ] || [ $# -ne $expected_args ]
-then
+# Check if user has sudo privledges.
+if ( ! is_admin ); then
+    echo "Must run as sudo or root."
     usage
-    exit $e_badargs
+    exit $E_NOTAUTHORIZED
 fi
 
+# Check for proper number of command line args.
+expected_args=1
+if [ $# -ne $expected_args ]
+then
+    usage
+    exit $E_BADARGS
+fi
+
+##############################################
+# Delete VM
+#
 
 # Delete a VM
 (VBoxManage unregistervm $1 --delete)
 
+
+##############################################
+# Clean up other files
+#
+
 # Remove the upstart conf file if it exists.
 upstart_conf = "/etc/init/vm-$1.conf"
-if [[ -f $upstart_conf ]] then
-  echo "removing $1"
+if [ -f $upstart_conf ] then
+  echo "removing $upstart_conf"
   rm $upstart_conf
 else
   echo "not found: $upstart_conf"
 fi
 
+# Remove the remote upstart conf file if it exists.
+upstart_conf = "/etc/init/vm-$1-rd.conf"
+if [ -f $upstart_conf ] then
+  echo "removing $upstart_conf"
+  rm $upstart_conf
+else
+  echo "not found: $upstart_conf"
+fi
 
+vm_root=$(vm_root_dir $1)
+if [ -d $vm_root ]; then
+    echo "Deleting dir: $vm_root"
+    #rm -r $vm_root
+fi

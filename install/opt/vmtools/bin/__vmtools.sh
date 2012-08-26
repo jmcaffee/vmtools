@@ -25,6 +25,7 @@ TURNKEY="http://downloads.sourceforge.net/project/turnkeylinux/vmdk"
 
 # Error Codes
 E_BADARGS=65
+E_NOTAUTHORIZED=66
 
 
 ##############################################
@@ -105,6 +106,27 @@ function required_uid () {
 
 }
 export -f required_uid
+
+
+
+#---------------------------------------------
+# is_admin
+#
+# Return 0 if user is sudo
+#
+function is_admin () {
+    if [[ "x$(uname)" == "xLinux" ]]; then
+        if [ $UID -ne 0 ]; then
+            return 1;
+        fi
+    else
+        if [ $UID -ne 500 ]; then
+            return 1;
+        fi
+    fi
+    return 0;
+}
+export -f is_admin
 
 
 
@@ -299,12 +321,13 @@ function is_vm_running () {
     vmname=${1:-$vmname}        # Defaults to $vmname.
     
     #found=(VBoxManage list runningvms | grep -iw "$vmname" )
-    found="found something"
-    if [ -n found ]; then
-        echo true;
-        return
+    res=$(VBoxManage list runningvms | grep -iw "$vmname" )
+
+    if [ -n "$res" ]; then
+        return 0
     fi
-    echo false;
+
+    return 1;
 }
 export -f is_vm_running
 

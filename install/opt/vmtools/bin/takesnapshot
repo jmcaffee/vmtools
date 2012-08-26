@@ -26,12 +26,16 @@ usage() {
 # Validation Checks
 #
 
-# Set required UID based on the OS.
-required_uid=$(required_uid)
+# Check if user has sudo privledges.
+if ( ! is_admin ); then
+    echo "Must run as sudo or root."
+    usage
+    exit $E_NOTAUTHORIZED
+fi
 
 # Check for proper number of command line args.
 expected_args=1
-if [ $UID -ne $required_uid ] || [ $# -lt $expected_args ]
+if [ $# -ne $expected_args ]
 then
     usage
     exit $E_BADARGS
@@ -48,12 +52,34 @@ snap_name=${2:-$dt_name}               # Default to 'snapshot-YYYY-MM-DD'
 
 
 ##############################################
+# Pause VM if running
+#
+
+if ( (is_vm_running $vm_name) ); then
+    echo "  Pausing VM prior to snapshot"
+    (VBoxManage controlvm $vm_name pause)
+    vm_is_paused=true
+else
+    vm_is_paused=false
+fi
+
+
+##############################################
 # Take a snapshot
 #
 
-if ( VBoxManage snapshot $vm_name take $snap_name ); then
+if ( (VBoxManage snapshot $vm_name take $snap_name) ); then
   echo "Snapshot taken: $snap_name"
 else
-  exit $E_BADARGS
+  echo "Error: There was a problem taking the snapshot"
 fi
 
+
+##############################################
+# Resume VM if paused
+#
+
+if [[ $vm_is_paused == true ]]; then
+    echo "  Resuming VM post snapshot"
+    (VBoxManage controlvm $vm_name resume)
+fi

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ##############################################################################
-# File::    test-uid
-# Purpose:: Test library function 'required_uid'
+# File::    test-vmtools
+# Purpose:: Test vmtools library functions
 # 
 # Author::    Jeff McAffee 08/23/2012
 # Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.
@@ -55,14 +55,6 @@ describe "function is_vm_running"
 end_describe # function is_vm_running
 
 
-function is_linux () {
-    local is_linux=false
-    if [[ "x$(uname)" == "xLinux" ]]; then
-        is_linux=true
-    fi
-    echo $is_linux
-}
-export -f is_linux
 describe "With is_linux()"
     describe "when current system is linux"
 
@@ -107,4 +99,62 @@ describe "With is_linux()"
     end_describe # when current system is linux
 
 end_describe # With is_linux()
+
+
+describe "With is_admin()"
+    describe "when OS is windows"
+      describe "when $UID is 500"
+          it "should return true"
+            if ( ! is_linux_os ); then
+              if [ $UID -eq 500 ]; then
+                if ( is_admin ); then
+                    pass
+                else
+                  fail
+                fi
+              else
+                if ( is_admin ); then
+                    fail
+                else
+                  pass
+                fi
+              fi
+            else
+              pass
+            fi
+          end_it # should return true
+            
+      end_describe # when $UID is 500
+      
+          
+    end_describe # when OS is windows
+    
+    describe "when OS is linux"
+      describe "when $UID is 0"
+          it "should return true"
+            if ( is_linux_os ); then
+              if [ $UID -eq 0 ]; then
+                if ( is_admin ); then
+                    pass
+                else
+                  fail
+                fi
+              else
+                if ( is_admin ); then
+                    fail
+                else
+                  pass
+                fi
+              fi
+            else
+              pass
+            fi
+          end_it # should return true
+
+      end_describe # when $UID is 500
+
+    end_describe # when OS is windows
+    
+      
+end_describe # With is_admin()
 
