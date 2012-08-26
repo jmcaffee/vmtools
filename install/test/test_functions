@@ -41,13 +41,13 @@ export -f get_vmdk
 #
 # Exit with 0 if OS is Linux, 1 otherwise.
 #
-function is_linux () {
+function is_linux_os () {
     if [[ "x$(uname)" == "xLinux" ]]; then
         exit 0;
     fi
     exit 1;
 }
-export -f is_linux
+export -f is_linux_os
 
 zero=0
 TAB_LEVEL=${TAB_LEVEL:-$zero}       # Defaults to 0.
@@ -212,7 +212,7 @@ function color_msg () {
         echo -en "$color"
         echo -n "$msg"
 
-        if ( is_linux ); then
+        if ( is_linux_os ); then
             (tput sgr0)
         else
             echo -e "$white"

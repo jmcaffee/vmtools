@@ -38,3 +38,73 @@ describe "function required_uid"
 end_describe # required_uid
 
 
+describe "function is_vm_running"
+            describe "when a VM is running"
+                    it "should return true"
+                            expected=true
+                            actual=$(is_vm_running "test")
+                            if [[ "$actual" != "$expected" ]]; then
+                                fail "Actual ($actual) != Expected ($expected)"
+                            else
+                                pass
+                            fi
+                    end_it # should return true
+
+            end_describe # when a VM is running
+
+end_describe # function is_vm_running
+
+
+function is_linux () {
+    local is_linux=false
+    if [[ "x$(uname)" == "xLinux" ]]; then
+        is_linux=true
+    fi
+    echo $is_linux
+}
+export -f is_linux
+describe "With is_linux()"
+    describe "when current system is linux"
+
+        # :before
+        somevar="someval"
+        
+        it "should return true"
+            actual=$(is_linux)
+            expected=true
+            if [[ "x$(uname)" != "xLinux" ]]; then
+                expected=false
+            fi
+            
+            if [[ "x$actual" != "x$expected" ]]; then
+                    fail "fail\n  Expected: $expected\n  Actual:   $actual"
+            else
+                    pass ""
+            fi
+        end_it # should return true
+
+    end_describe # when current system is linux
+
+    describe "when current system is windows"
+
+        it "should return false"
+            actual=$(is_linux)
+            expected=false
+            if [[ "x$(uname)" == "xLinux" ]]; then
+                expected=true
+            fi
+            
+            if [ $actual != $expected ]; then
+                fail "SOMETING IST WRONG!"
+            fi
+            if [[ "x$actual" != "x$expected" ]]; then
+                    fail "fail\n  Expected: $expected\n  Actual:   $actual"
+            else
+                    pass
+            fi
+        end_it # should return true
+
+    end_describe # when current system is linux
+
+end_describe # With is_linux()
+

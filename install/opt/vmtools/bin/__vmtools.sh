@@ -70,6 +70,22 @@ export -f vm_scripts_dir
 
 
 #---------------------------------------------
+# is_linux
+#
+# Return true or false
+#
+function is_linux () {
+    local is_linux=false
+    if [[ "x$(uname)" == "xLinux" ]]; then
+        is_linux=true
+    fi
+    echo $is_linux
+}
+export -f is_linux
+
+
+
+#---------------------------------------------
 # required_uid
 #
 # Return the required UID (sudo) based on OS.
@@ -270,6 +286,27 @@ EOF
 
 }
 export -f generate_upstart_file
+
+
+#---------------------------------------------
+# is_vm_running
+#
+# Return true if a specified VM is running.
+# Actually checks the results of 'VBoxManage list runningvms'
+#
+function is_vm_running () {
+    local vmname="tmp"
+    vmname=${1:-$vmname}        # Defaults to $vmname.
+    
+    #found=(VBoxManage list runningvms | grep -iw "$vmname" )
+    found="found something"
+    if [ -n found ]; then
+        echo true;
+        return
+    fi
+    echo false;
+}
+export -f is_vm_running
 
 
 
