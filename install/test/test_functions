@@ -19,6 +19,42 @@ vmtools_bin=$vmtools_root/bin
 vmtools_avail_vms=$vmtools_root/avail-vms
 vmtools_active_vms=$vmtools_root/active-vms
 
+##############################################
+# Tab and test stats global vars
+#
+
+TAB_LEVEL=${TAB_LEVEL:-0}       # Defaults to 0.
+TESTS_RUN=${TESTS_RUN:-0}      # Defaults to 0.
+PASSES=${PASSES:-0}            # Defaults to 0.
+FAILURES=${FAILURES:-0}        # Defaults to 0.
+
+
+##############################################
+# Color Codes for colorfull messages
+#
+
+#  Color        Foreground      Background
+#  black        30              40
+#  red          31              41
+#  green        32              42
+#  yellow       33              43
+#  blue         34              44
+#  magenta      35              45
+#  cyan         36              46
+#  white        37              47
+
+# Color code variables
+#
+black='\E[30;40m'
+red='\E[31;40m'
+green='\E[32;40m'
+yellow='\E[33;40m'
+blue='\E[34;40m'
+magenta='\E[35;40m'
+cyan='\E[36;40m'
+white='\E[37;40m'
+
+
 #---------------------------------------------
 # get_vmdk
 #
@@ -37,7 +73,7 @@ export -f get_vmdk
 
 
 #---------------------------------------------
-# is_linux
+# is_linux_os
 #
 # Exit with 0 if OS is Linux, 1 otherwise.
 #
@@ -48,13 +84,6 @@ function is_linux_os () {
     exit 1;
 }
 export -f is_linux_os
-
-zero=0
-TAB_LEVEL=${TAB_LEVEL:-$zero}       # Defaults to 0.
-TESTS_RUN=${TESTS_RUN:-$zero}      # Defaults to 0.
-PASSES=${PASSES:-$zero}            # Defaults to 0.
-FAILURES=${FAILURES:-0}        # Defaults to 0.
-
 
 
 #---------------------------------------------
@@ -119,6 +148,7 @@ function describe () {
     msg=${1:-$msg}        # Defaults to $msg.
     if [[ -n $msg ]]; then
         tab=$(get_tab)
+        #color_msg "$tab$msg" "$white"     # Slower, and we want the default color anyways.
         echo "$tab$msg"
     fi
     let "TAB_LEVEL += 1"
@@ -150,7 +180,8 @@ function it () {
     msg=${1:-$msg}        # Defaults to $msg.
     if [[ -n $msg ]]; then
         tab=$(get_tab)
-        echo "$tab$msg"
+        color_msg "$tab$msg" "$cyan"
+        #echo "$tab$msg"
     fi
     let "TAB_LEVEL += 1"
     #echo "TAB_LEVEL: $TAB_LEVEL"
@@ -169,31 +200,6 @@ function end_it () {
 }
 export -f end_it
 
-
-##############################################
-# Color Codes for colorfull messages
-#
-
-#  Color        Foreground      Background
-#  black        30              40
-#  red          31              41
-#  green        32              42
-#  yellow       33              43
-#  blue         34              44
-#  magenta      35              45
-#  cyan         36              46
-#  white        37              47
-
-# Color code variables
-#
-black='\E[30;40m'
-red='\E[31;40m'
-green='\E[32;40m'
-yellow='\E[33;40m'
-blue='\E[34;40m'
-magenta='\E[35;40m'
-cyan='\E[36;40m'
-white='\E[37;40m'
 
 #---------------------------------------------
 # color_msg
