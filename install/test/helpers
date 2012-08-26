@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 ##############################################################################
-# File::    tt-functions
-# Purpose:: Test functions
+# File::    helpers
+# Purpose:: Testing helper functions
 # 
 # Author::    Jeff McAffee 08/22/2012
 # Copyright:: Copyright (c) 2012, kTech Systems LLC. All rights reserved.

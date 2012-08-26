@@ -11,7 +11,7 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 INSTALL_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 source $INSTALL_DIR/opt/vmtools/bin/__vmtools.sh
-source $SCRIPT_DIR/test_functions
+source $SCRIPT_DIR/helpers
 
 
 describe "function vm_root_dir"
