@@ -214,6 +214,7 @@ function color_msg () {
 
         if ( is_linux_os ); then
             (tput sgr0)
+            echo ""     # Need to send a new line.
         else
             echo -e "$white"
         fi
