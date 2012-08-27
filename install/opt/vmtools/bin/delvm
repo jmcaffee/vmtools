@@ -52,7 +52,7 @@ fi
 
 # Remove the upstart conf file if it exists.
 upstart_conf = "/etc/init/vm-$1.conf"
-if [ -f $upstart_conf ] then
+if [ -f $upstart_conf ]; then
   echo "removing $upstart_conf"
   rm $upstart_conf
 else
@@ -61,7 +61,7 @@ fi
 
 # Remove the remote upstart conf file if it exists.
 upstart_conf = "/etc/init/vm-$1-rd.conf"
-if [ -f $upstart_conf ] then
+if [ -f $upstart_conf ]; then
   echo "removing $upstart_conf"
   rm $upstart_conf
 else
