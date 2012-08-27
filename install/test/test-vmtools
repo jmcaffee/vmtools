@@ -16,15 +16,13 @@ source $SCRIPT_DIR/helpers
 
 describe "function required_uid"
     describe "when UID is requested"
-        describe "based on OS value returned from 'uname'"
+      if ( is_linux_os ); then
+        describe "when OS is linux"
             
             # :before
 
-            it "should return UID 0 for Linux and 500 for everything else"
-                expected=500
-                if [[ "x$(uname)" == "xLinux" ]]; then
-                    expected=0
-                fi
+            it "should return UID 0"
+                expected=0
                 actual=$(required_uid)
                 if [[ $actual == $expected ]]; then
                     pass
@@ -33,6 +31,22 @@ describe "function required_uid"
                 fi
             end_it # should ...
         end_describe # when ...
+      else
+        describe "when OS is windows"
+            it "should return UID 500"
+                expected=500
+                actual=$(required_uid)
+                if [[ $actual == $expected ]]; then
+                    pass
+                else
+                    fail "Actual ($actual) != Expected ($expected)"
+                fi
+                  
+            end_it # should return UID 500
+              
+        end_describe # when OS is windows
+      fi
+        
     end_describe # when ...
 
 end_describe # required_uid
@@ -56,104 +70,86 @@ end_describe # function is_vm_running
 
 
 describe "With is_linux()"
+  if ( is_linux_os ); then
     describe "when current system is linux"
 
         # :before
         somevar="someval"
         
         it "should return true"
-            actual=$(is_linux)
-            expected=true
-            if [[ "x$(uname)" != "xLinux" ]]; then
-                expected=false
-            fi
-            
-            if [[ "x$actual" != "x$expected" ]]; then
-                    fail "fail\n  Expected: $expected\n  Actual:   $actual"
-            else
-                    pass ""
-            fi
+        if ( is_linux ); then
+          pass
+        else
+          fail
+        fi
         end_it # should return true
 
     end_describe # when current system is linux
+  else
 
     describe "when current system is windows"
 
         it "should return false"
-            actual=$(is_linux)
-            expected=false
-            if [[ "x$(uname)" == "xLinux" ]]; then
-                expected=true
-            fi
-            
-            if [ $actual != $expected ]; then
-                fail "SOMETING IST WRONG!"
-            fi
-            if [[ "x$actual" != "x$expected" ]]; then
-                    fail "fail\n  Expected: $expected\n  Actual:   $actual"
-            else
-                    pass
-            fi
-        end_it # should return true
+        if ( is_linux ); then
+          fail
+        else
+          pass
+        fi
+        end_it # should return false
 
-    end_describe # when current system is linux
+    end_describe # when current system is windows
+  fi
 
 end_describe # With is_linux()
 
 
 describe "With is_admin()"
+  if ( ! is_linux_os ); then
     describe "when OS is windows"
-      describe "when $UID is 500"
+      describe "when UID is 500"
           it "should return true"
-            if ( ! is_linux_os ); then
-              if [ $UID -eq 500 ]; then
-                if ( is_admin ); then
-                    pass
-                else
-                  fail
-                fi
-              else
-                if ( is_admin ); then
-                    fail
-                else
+            if [ $UID -eq 500 ]; then
+              if ( is_admin ); then
                   pass
-                fi
+              else
+                fail
               fi
             else
-              pass
+              if ( is_admin ); then
+                  fail
+              else
+                pass
+              fi
             fi
           end_it # should return true
             
       end_describe # when $UID is 500
-      
           
     end_describe # when OS is windows
+  else
     
     describe "when OS is linux"
-      describe "when $UID is 0"
+      describe "when UID is 0"
           it "should return true"
-            if ( is_linux_os ); then
-              if [ $UID -eq 0 ]; then
-                if ( is_admin ); then
-                    pass
-                else
-                  fail
-                fi
-              else
-                if ( is_admin ); then
-                    fail
-                else
+            if [ $UID -eq 0 ]; then
+              if ( is_admin ); then
                   pass
-                fi
+              else
+                fail
               fi
             else
-              pass
+              if ( is_admin ); then
+                  fail
+              else
+                pass
+              fi
             fi
           end_it # should return true
 
-      end_describe # when $UID is 500
+      end_describe # when $UID is 0
 
-    end_describe # when OS is windows
+    end_describe # when OS is linux
+  fi
     
       
 end_describe # With is_admin()

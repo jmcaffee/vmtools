@@ -76,11 +76,10 @@ export -f vm_scripts_dir
 # Return true or false
 #
 function is_linux () {
-    local is_linux=false
     if [[ "x$(uname)" == "xLinux" ]]; then
-        is_linux=true
+        return 0;
     fi
-    echo $is_linux
+    return 1;
 }
 export -f is_linux
 
@@ -324,7 +323,7 @@ function is_vm_running () {
     res=$(VBoxManage list runningvms | grep -iw "$vmname" )
 
     if [ -n "$res" ]; then
-        return 0
+        return 0;
     fi
 
     return 1;

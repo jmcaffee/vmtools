@@ -79,9 +79,9 @@ export -f get_vmdk
 #
 function is_linux_os () {
     if [[ "x$(uname)" == "xLinux" ]]; then
-        exit 0;
+      return 0;
     fi
-    exit 1;
+    return 1;
 }
 export -f is_linux_os
 
