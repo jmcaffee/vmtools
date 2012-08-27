@@ -71,5 +71,5 @@ fi
 vm_root=$(vm_root_dir $1)
 if [ -d $vm_root ]; then
     echo "Deleting dir: $vm_root"
-    #rm -r $vm_root
+    rm -r $vm_root
 fi
